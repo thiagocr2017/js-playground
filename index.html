@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="csrf-token" content="">
+  <title>Invoice</title>
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+ 
+</head>
+<body>
+ 
+<div class="container">
+    <div class="row">
+        <div class="col-12"><h2>Invoice</h2>
+        <div class="text-danger">Numero: 0000001</div>
+        </div>
+        
+        <div class="col-12">
+            <!-- Row Invoice Details -->
+            <div class="row font-weight-light">
+                <div class="col">
+                <div class="card">
+                        <div class="card-body">
+                       
+                            <div>Empresa: Vendinha de Tomade</div>
+                            <div>CNPJ: </div>
+                            <div>Vendedor: José Silva</div>
+                            <div>Phone Number: </div>
+                            <div>Address: </div>
+                       
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card">
+                        <div class="card-body bg-light">
+                        
+                            <div>Code: </div>
+                            <div>Name: </div>
+                            <div>CPF: </div>
+                            <div>Phone Number: </div>
+                            <div>Address: </div>
+                        
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- end Row Invoice Details -->
+
+            <!-- Row Products -->
+            <div class="row mt-2">
+                <div class="col">
+                    <div class="card">
+                        <div class="card-body">
+                            <form id="productForm" autocomplete="off">
+                                <div class="form-row">
+                                    <div class="col">
+                                        <input type="text" name="name" id="name" class="form-control" placeholder="Product">
+                                    </div>
+                                    <div class="col">    
+                                        <input type="number" step="0.01" name="quantity" id="quantity" class="form-control" placeholder="Quantity">
+                                    </div>
+                                    <div class="col">
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">%</span>
+                                            </div>  
+                                            <input type="number" step="0.01" name="discount" id="discount" class="form-control" placeholder="Discount" value="0">
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">$</span>
+                                            </div>  
+                                            <input type="number" step="0.01" name="price" id="price" class="form-control" placeholder="Price">
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <button type="submit" class="btn btn-info">+</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- end Row Products -->
+            <div id="message"></div>
+            <!-- Row Products Table -->
+            <div class="row mt-2">
+                <div class="col">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <div class="card mb-4">
+                                    <div class="card-body">
+                                        <div class="row text-center">
+                                            <div class="col"><strong>Acction</strong></div>
+                                            <div class="col"><strong>Row</strong></div>
+                                            <div class="col"><strong>Product</strong></div>
+                                            <div class="col"><strong>Quantity</strong></div>
+                                            <div class="col"><strong>Discount</strong></div>
+                                            <div class="col"><strong>Priace</strong></div>
+                                            <div class="col"><strong>Total</strong></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="productList"> </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- end Row Products Table -->
+            <div class="row mt-2 text-right">
+                <div class="col">
+                    <button type="submit" class="btn btn-block btn-success">Save</button>
+                    <button type="submit" class="btn btn-block btn-secondary">Cancel</button>
+                </div>
+                <div class="col">
+                    <div class="card">
+                        <div class="card-body" id="invoiceSummary">
+                            <div class="row text-center">
+                                <div class="col">
+                                    <div>Subtotal:</div>
+                                    <div>Discount:</div>
+                                    <div>IVA:</div>
+                                    <div>Total:</div>
+                                </div>
+                                    <div class="col">
+                                    <div id="subTotalSummary"></div>
+                                    <div id="discountSummary"></div>
+                                    <div id="ivaSummary"></div>
+                                    <div id="totalSummary"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="js/App.js"></script>
+</body>
+</html>
