@@ -1,4 +1,7 @@
 //Object Class
+let subTSummary = [];
+const reducer = (accumulator, currentValue) => accumulator + currentValue;
+
 class Product {
     constructor(name, quantity, discount, price) {
         this.name = name;
@@ -42,19 +45,24 @@ class Ui {
         `;
         productList.appendChild(tbody);
         // console.log(product);
+        this.showMenssage('Product Added Successfuly', 'success');
         this.resetForm();
     }
 
-    // summary() {
-    //     var i=0;
-    //     const totalPrice = document.querySelectorAll('div.totalprice');
-    //     for (var item of totalPrice) {
-    //         i++;
-    //     }
-    //     item = parseFloat(item.childNodes[0].textContent);
-    //     // Almacena la información en sessionStorage
-    //     var db = sessionStorage.setItem(i, item);
-    // }
+    summary() {
+        let i=0;
+        const totalPrice = document.querySelectorAll('div.totalprice');
+        for (var item of totalPrice) {
+            i++;
+        }
+        //string to float
+        item = parseFloat(item.childNodes[0].textContent);
+        //insert total price in to SubTotal Summary
+        subTSummary.push(item);
+        let subTotal = subTSummary.reduce(reducer);
+        // console.log();
+        return subTotal.toFixed(2);
+    }
 
     resetForm() {
         document.getElementById('productForm').reset();
@@ -62,8 +70,8 @@ class Ui {
 
     deletProduct(element) {
         if (element.name === 'delet') {
-            // console.log(element.parentElement.parentElement.parentElement.parentElement.parentElement);
-            element.parentElement.parentElement.parentElement.parentElement.parentElement.remove();
+            console.log(element.parentElement.parentElement.parentElement.parentElement.parentElement);
+            // element.parentElement.parentElement.parentElement.parentElement.parentElement.remove();
             this.showMenssage('Product has Deleted', 'danger');
         }
     }
@@ -89,6 +97,7 @@ document.getElementById('productForm')
         const quantity = document.getElementById('quantity').value;
         const discount = document.getElementById('discount').value;
         const price = document.getElementById('price').value;
+        const subTotalSummary = document.getElementById('subTotalSummary');
 
         // console.log(name, quantity, discount, price);
         const product = new Product(name, quantity, discount, price);
@@ -99,16 +108,10 @@ document.getElementById('productForm')
             ui.showMenssage('Complete Fields Please', 'warning');
         } else{
             ui.addProduct(product);
-            ui.showMenssage('Product Added Successfuly', 'success');
-            // ui.summary();
+            
+            subTotalSummary.innerHTML = ui.summary();
+            // console.log(document.getElementById('subTotalSummary').innerHTML = ui.summary());
         }
-        
-        // Obtiene la información almacenada desde sessionStorage
-        var data = sessionStorage;
-        for (const item of data) {
-        }
-        console.log(data);
-       
         
         e.preventDefault();
         ui.resetForm();
