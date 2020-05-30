@@ -1,13 +1,40 @@
 //Object Class
-let subTSummary = [];
+idLine = 0;
+const productLine = [];
 const reducer = (accumulator, currentValue) => accumulator + currentValue;
 
+function deletProduct(element) {
+    // console.log(element);
+    // console.log(productLine);
+    if (element >= 0) {
+        const ui = new Ui();
+        //Delete from HTML
+        // console.log(document.querySelector('#row-' + element).parentElement);
+        document.querySelector('#row-' + element).parentElement.remove();
+        ui.showMenssage('Product ' + productLine[element].name + ' has Deleted', 'danger');
+        // console.log(productLine[element].total);
+        // console.log(ui.summary());
+        // console.log();
+        let summarySubT = ui.summary() - productLine[element].total;
+        subTotalSummary.innerHTML = new Intl.NumberFormat('en-US',
+            { style: 'currency', currency: 'USD' }
+        ).format(summarySubT);
+        //Delete from Arry productLine
+        // console.log(delete productLine[element]);
+        delete productLine[element];
+        
+       
+    }
+}
+
 class Product {
-    constructor(name, quantity, discount, price) {
+    constructor(id, name, quantity, discount, price, total) {
+        this.id = id;
         this.name = name;
         this.quantity = quantity;
         this.discount = discount;
         this.price = price;
+        this.total = total;
     }
 
 }
@@ -15,65 +42,54 @@ class Product {
 class Ui {
     
     addProduct(product) {
+        // console.log(product);
+        productLine.push(product);
         const productList = document.getElementById('productList');
         const tbody = document.createElement('div');
         tbody.innerHTML = `
-        <div class="card mb-2">
-            <div class="card">
-                <div class="row text-center">
-                    <div class="col">
-                    <a href="#" name="delet" class="btn btn-link"> Delet </a>
-                    </div>
-                    <div class="col mt-2"> 
-                     ${product.name}
-                    </div>
-                    <div class="col mt-2">
-                     ${product.quantity}
-                    </div>
-                    <div class="col mt-2">
-                     ${product.discount}
-                    </div>
-                    <div class="col mt-2">
-                     ${product.price}
-                    </div>
-                    <div class="col mt-2 totalprice">
-                     ${ new Intl.NumberFormat().format((product.price * product.quantity) * (1 - (product.discount / 100)))}
-                    </div>
+            <div id="row-${productLine.indexOf(product)}" class="row text-center" style="border: 1px solid lightgray;">
+                <div class="col">
+                <button onclick="deletProduct(${productLine.indexOf(product)})" href="#" name="delet" class="btn btn-link"> Delet </button>
                 </div>
-            </div> 
-        </div>          
+                <div class="col mt-2"> 
+                 ${product.name}
+                </div>
+                <div class="col mt-2">
+                 ${product.quantity}
+                </div>
+                <div class="col mt-2">
+                 ${parseFloat(product.discount).toFixed(2)+"%"}
+                </div>
+                <div class="col mt-2">
+                 ${ new Intl.NumberFormat('en-US',
+                        { style: 'currency', currency: 'USD' }
+                    ).format(product.price)}
+                </div>
+                <div class="col mt-2 totalprice">
+                 ${ new Intl.NumberFormat('en-US',
+                        { style: 'currency', currency: 'USD' }
+                    ).format(product.total)}
+                </div>
+            </div>    
         `;
         productList.appendChild(tbody);
-        // console.log(product);
+        
         this.showMenssage('Product Added Successfuly', 'success');
         this.resetForm();
+        
+        idLine++;
     }
 
     summary() {
-        let i=0;
-        const totalPrice = document.querySelectorAll('div.totalprice');
-        for (var item of totalPrice) {
-            i++;
+        let totals =[]; 
+        for (let items of productLine) {
+              totals.push(items.total);
         }
-        //string to float
-        item = parseFloat(item.childNodes[0].textContent);
-        //insert total price in to SubTotal Summary
-        subTSummary.push(item);
-        let subTotal = subTSummary.reduce(reducer);
-        // console.log();
-        return subTotal.toFixed(2);
+        return totals.reduce(reducer);
     }
 
     resetForm() {
         document.getElementById('productForm').reset();
-    }
-
-    deletProduct(element) {
-        if (element.name === 'delet') {
-            console.log(element.parentElement.parentElement.parentElement.parentElement.parentElement);
-            // element.parentElement.parentElement.parentElement.parentElement.parentElement.remove();
-            this.showMenssage('Product has Deleted', 'danger');
-        }
     }
 
     showMenssage(message, cssClass) {
@@ -85,7 +101,7 @@ class Ui {
         app.append(div);
         setTimeout(function(){
             document.querySelector('.alert').remove();
-        }, 1000);
+        }, 2000);
     }
 }
 
@@ -93,32 +109,25 @@ class Ui {
 
 document.getElementById('productForm')
     .addEventListener('submit', function(e) {
+        const id = idLine;
         const name = document.getElementById('name').value;
-        const quantity = document.getElementById('quantity').value;
-        const discount = document.getElementById('discount').value;
-        const price = document.getElementById('price').value;
+        const quantity = parseFloat(document.getElementById('quantity').value);
+        const discount = parseFloat(document.getElementById('discount').value);
+        const price = parseFloat(document.getElementById('price').value);
+        const total = ((price * quantity) * (1 - (discount/100)));
         const subTotalSummary = document.getElementById('subTotalSummary');
-
-        // console.log(name, quantity, discount, price);
-        const product = new Product(name, quantity, discount, price);
-        // console.log(product);
+        const product = new Product(id, name, quantity, discount, price, total);
         const ui = new Ui();
 
-        if (name === '' || quantity === '' || discount === '' || price === '') {
+        if (name === '' ||  quantity === '' || discount === '' || price === '') {
             ui.showMenssage('Complete Fields Please', 'warning');
         } else{
             ui.addProduct(product);
-            
-            subTotalSummary.innerHTML = ui.summary();
-            // console.log(document.getElementById('subTotalSummary').innerHTML = ui.summary());
-        }
-        
-        e.preventDefault();
-        ui.resetForm();
-    });
 
-document.getElementById('productList').addEventListener('click', function(e) {
-    // console.log(e.target);
-    const ui = new Ui();
-    ui.deletProduct(e.target);
-});
+            // console.log(ui.summary());
+            subTotalSummary.innerHTML = new Intl.NumberFormat('en-US',
+            { style: 'currency', currency: 'USD' }
+            ).format(ui.summary());
+        }
+        e.preventDefault();
+    });
