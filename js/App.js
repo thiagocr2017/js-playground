@@ -1,32 +1,66 @@
-//Object Class
-idLine = 0;
+// Documentation:
+// https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model
+// https://developer.mozilla.org/es/docs/Web/JavaScript/Referencia/Objetos_globales/Array/forEach
+// https://developer.mozilla.org/es/docs/Web/JavaScript/Referencia/Objetos_globales/isNaN
+// https://developer.mozilla.org/en-US/docs/Web/API/Element/querySelector
+// https://developer.mozilla.org/en-US/docs/Web/API/DOMTokenList/remove
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/Reduce
+// https://developer.mozilla.org/es/docs/Web/API/Event/preventDefault
+
+
+
+// Global vairiables and const.
+let idLine = 0;
 const productLine = [];
 const reducer = (accumulator, currentValue) => accumulator + currentValue;
 
+// Functions
+// 
+// 
+//Function Invoice Summary Subtotal, print the Subtotal HTML.
+function subTotalCalculation() {
+    let stotal = 0.00;
+    // Validation and Calculation
+    productLine.forEach(element => {
+    if (isNaN(element.total)) {
+        stotal += 0
+    } else{
+        stotal += element.total
+    }});
+
+    return stotal;
+}
+
 function deletProduct(element) {
-    // console.log(element);
-    // console.log(productLine);
     if (element >= 0) {
         const ui = new Ui();
+        let subtotalHTML = 0.00;
         //Delete from HTML
-        // console.log(document.querySelector('#row-' + element).parentElement);
+        
         document.querySelector('#row-' + element).parentElement.remove();
         ui.showMenssage('Product ' + productLine[element].name + ' has Deleted', 'danger');
-        // console.log(productLine[element].total);
-        // console.log(ui.summary());
-        // console.log();
-        let summarySubT = ui.summary() - productLine[element].total;
+
+        // Do the Math.
+        if ( isNaN(productLine[element].total)) {
+            subtotalHTML = subTotalCalculation() - 0
+        } else {
+            subtotalHTML = subTotalCalculation() - productLine[element].total
+        }
+        // end Do the Math.
+
         subTotalSummary.innerHTML = new Intl.NumberFormat('en-US',
             { style: 'currency', currency: 'USD' }
-        ).format(summarySubT);
-        //Delete from Arry productLine
-        // console.log(delete productLine[element]);
-        delete productLine[element];
+        ).format(subtotalHTML);
         
-       
+        //Delete from Arry productLine
+        delete productLine[element];
     }
 }
 
+// Objects
+// 
+// 
+// Product Object
 class Product {
     constructor(id, name, quantity, discount, price, total) {
         this.id = id;
@@ -36,13 +70,12 @@ class Product {
         this.price = price;
         this.total = total;
     }
-
 }
 
 class Ui {
-    
+    // corregir quando los product values NaN = 0;
     addProduct(product) {
-        // console.log(product);
+        console.log(product);
         productLine.push(product);
         const productList = document.getElementById('productList');
         const tbody = document.createElement('div');
@@ -76,16 +109,7 @@ class Ui {
         
         this.showMenssage('Product Added Successfuly', 'success');
         this.resetForm();
-        
         idLine++;
-    }
-
-    summary() {
-        let totals =[]; 
-        for (let items of productLine) {
-              totals.push(items.total);
-        }
-        return totals.reduce(reducer);
     }
 
     resetForm() {
@@ -106,9 +130,10 @@ class Ui {
 }
 
 // DOM Event
-
 document.getElementById('productForm')
-    .addEventListener('submit', function(e) {
+    .addEventListener('submit', function(evt) {
+
+        // Product Info
         const id = idLine;
         const name = document.getElementById('name').value;
         const quantity = parseFloat(document.getElementById('quantity').value);
@@ -116,6 +141,8 @@ document.getElementById('productForm')
         const price = parseFloat(document.getElementById('price').value);
         const total = ((price * quantity) * (1 - (discount/100)));
         const subTotalSummary = document.getElementById('subTotalSummary');
+
+        // Call Class Produc and Ui
         const product = new Product(id, name, quantity, discount, price, total);
         const ui = new Ui();
 
@@ -123,11 +150,10 @@ document.getElementById('productForm')
             ui.showMenssage('Complete Fields Please', 'warning');
         } else{
             ui.addProduct(product);
-
-            // console.log(ui.summary());
             subTotalSummary.innerHTML = new Intl.NumberFormat('en-US',
             { style: 'currency', currency: 'USD' }
-            ).format(ui.summary());
+            ).format(subTotalCalculation());
         }
-        e.preventDefault();
+
+        evt.preventDefault();
     });
