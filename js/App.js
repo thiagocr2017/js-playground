@@ -6,55 +6,144 @@
 // https://developer.mozilla.org/en-US/docs/Web/API/DOMTokenList/remove
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/Reduce
 // https://developer.mozilla.org/es/docs/Web/API/Event/preventDefault
-
-
+// https://developer.mozilla.org/es/docs/Web/Events/DOMContentLoaded
 
 // Global vairiables and const.
+// 
 let idLine = 0;
+const iva = 0.13;
 const productLine = [];
 const reducer = (accumulator, currentValue) => accumulator + currentValue;
+
+// Invoice Summary Data:Var
+let sSubtotal = 0.00;
+let sDiscount = 0.00;
+let sIVA = 0.00;
+let sTotal = 0.00;
 
 // Functions
 // 
 // 
-//Function Invoice Summary Subtotal, print the Subtotal HTML.
-function subTotalCalculation() {
-    let stotal = 0.00;
-    // Validation and Calculation
-    productLine.forEach(element => {
-    if (isNaN(element.total)) {
-        stotal += 0
-    } else{
-        stotal += element.total
-    }});
+//Function Invoice Product Delete in productLine:Array and HTML.
+function deletProduct(id) {
+    if (id >= 0) {
+        bootbox.confirm({
+            message: `<h4 class="modal-title">Do you want to delet <strong>${productLine[id].name}</strong>?</h4>`, 
+            buttons: {
+                confirm: {
+                    label: 'Yes',
+                    className: 'btn-success'
+            },
+            cancel: {
+                label: 'No',
+                className: 'btn-secondary'
+            }
+        },
+            callback: function(result){ 
+                    // Show Menssage deleted product.
+                if(result == true){
+                    document.querySelector('#row-' + id).parentElement.remove();
+                    // Do the Math.
+                    if (isNaN(productLine[id].total)) {
+                        sIVA -= 0;
+                        sSubtotal -= 0;
+                        sDiscount -= 0;
+                        sTotal -= 0;
+                    } else {
+                        // Round Summary
+                        sSubtotal = parseFloat((sSubtotal).toFixed(2));
+                        sDiscount = parseFloat((sDiscount).toFixed(2));
+                        sIVA = parseFloat((sIVA).toFixed(2));
+                        sTotal = parseFloat((sTotal).toFixed(2));
+                    
+                        sSubtotal -= parseFloat((productLine[id].total).toFixed(2));
+                        sDiscount -= parseFloat(((productLine[id].quantity * productLine[id].price) - productLine[id].total).toFixed(2));
+                        sIVA -= parseFloat((productLine[id].total * iva).toFixed(2));
+                        sTotal -= parseFloat((productLine[id].total + (productLine[id].total * iva)).toFixed(2));
 
-    return stotal;
+                    }
+                    // TEST
+                    // console.log("Deletando:");
+                    // console.log(sSubtotal);
+                    // console.log(sDiscount);
+                    // console.log(sIVA);
+                    // console.log(sTotal);
+                
+                    // Delete from productLine:Arry
+                    delete productLine[id];
+                
+                    //Delete from HTML
+                    subTotalSummary.innerHTML = new Intl.NumberFormat('en-US',
+                        { style: 'currency', currency: 'USD' }
+                    ).format(sSubtotal);
+                    document.getElementById('discountSummary').innerHTML = new Intl.NumberFormat('en-US',
+                        { style: 'currency', currency: 'USD' }
+                    ).format(sDiscount);
+                    document.getElementById('ivaSummary').innerHTML = new Intl.NumberFormat('en-US',
+                        { style: 'currency', currency: 'USD' }
+                    ).format(sIVA);
+                    document.getElementById('totalSummary').innerHTML = new Intl.NumberFormat('en-US',
+                        { style: 'currency', currency: 'USD' }
+                    ).format(sTotal); 
+                }
+            }
+        });
+    }
+    document.getElementById('name').focus();
+}
+//Function addSummary, print the Summary HTML.
+function addSummary(id) {
+    // Do the Math.
+    if (isNaN(productLine[id].total)) {
+        sSubtotal += 0;
+        sDiscount += 0;
+        sIVA += 0;
+    } else {
+        sSubtotal = parseFloat((sSubtotal).toFixed(2));
+        sDiscount = parseFloat((sDiscount).toFixed(2));
+        sIVA = parseFloat((sIVA).toFixed(2));
+        sTotal = parseFloat((sTotal).toFixed(2));
+
+        sSubtotal += parseFloat((productLine[id].total).toFixed(2));
+        sDiscount += parseFloat(((productLine[id].quantity * productLine[id].price) - productLine[id].total).toFixed(2));
+        sIVA += parseFloat((productLine[id].total * iva).toFixed(2));
+        sTotal += parseFloat((productLine[id].total + (productLine[id].total * iva)).toFixed(2));
+    }
+    // console.log("Adding:");
+    // console.log(sSubtotal);
+    // console.log(sDiscount);
+    // console.log(sIVA);
+    // console.log(sTotal);
+
+    //Add in HTML
+    document.getElementById('subTotalSummary').innerHTML = new Intl.NumberFormat('en-US',
+        { style: 'currency', currency: 'USD' }
+    ).format(sSubtotal);
+    document.getElementById('discountSummary').innerHTML = new Intl.NumberFormat('en-US',
+        { style: 'currency', currency: 'USD' }
+    ).format(sDiscount);
+    document.getElementById('ivaSummary').innerHTML = new Intl.NumberFormat('en-US',
+        { style: 'currency', currency: 'USD' }
+    ).format(sIVA);
+    document.getElementById('totalSummary').innerHTML = new Intl.NumberFormat('en-US',
+        { style: 'currency', currency: 'USD' }
+    ).format(sTotal);
 }
 
-function deletProduct(element) {
-    if (element >= 0) {
-        const ui = new Ui();
-        let subtotalHTML = 0.00;
-        //Delete from HTML
-        
-        document.querySelector('#row-' + element).parentElement.remove();
-        ui.showMenssage('Product ' + productLine[element].name + ' has Deleted', 'danger');
+function save() {
+    productLine.forEach(element => {
+        console.log(element);
+    });
+    // bootbox.alert({
+    //     message: '<h4 class="modal-title">Complete Fields Please!</h4>',
+    //     backdrop: true,
+    // });
+    // const ui = new Ui();
+    // ui.colorMenssage("success");
+}
 
-        // Do the Math.
-        if ( isNaN(productLine[element].total)) {
-            subtotalHTML = subTotalCalculation() - 0
-        } else {
-            subtotalHTML = subTotalCalculation() - productLine[element].total
-        }
-        // end Do the Math.
+function cancel(){
 
-        subTotalSummary.innerHTML = new Intl.NumberFormat('en-US',
-            { style: 'currency', currency: 'USD' }
-        ).format(subtotalHTML);
-        
-        //Delete from Arry productLine
-        delete productLine[element];
-    }
 }
 
 // Objects
@@ -73,13 +162,12 @@ class Product {
 }
 
 class Ui {
-    // corregir quando los product values NaN = 0;
+
     addProduct(product) {
-        console.log(product);
         productLine.push(product);
         const productList = document.getElementById('productList');
-        const tbody = document.createElement('div');
-        tbody.innerHTML = `
+        const tBody = document.createElement('div');
+        tBody.innerHTML = `
             <div id="row-${productLine.indexOf(product)}" class="row text-center" style="border: 1px solid lightgray;">
                 <div class="col">
                 <button onclick="deletProduct(${productLine.indexOf(product)})" href="#" name="delet" class="btn btn-link"> Delet </button>
@@ -105,55 +193,54 @@ class Ui {
                 </div>
             </div>    
         `;
-        productList.appendChild(tbody);
-        
-        this.showMenssage('Product Added Successfuly', 'success');
+        productList.appendChild(tBody);
         this.resetForm();
         idLine++;
+        
     }
 
     resetForm() {
         document.getElementById('productForm').reset();
+        document.getElementById('name').focus();
     }
 
-    showMenssage(message, cssClass) {
-        const div = document.createElement('div');
-        div.className = `alert alert-${cssClass} mt-2`;
-        div.appendChild(document.createTextNode(message));
-        // Showing in the DOM
-        const app = document.querySelector('#message');
-        app.append(div);
-        setTimeout(function(){
-            document.querySelector('.alert').remove();
-        }, 2000);
+    colorMenssage(cssClass) {
+        const div = document.querySelector('.modal-content');
+        div.className = `bg-${cssClass}`;
     }
 }
 
 // DOM Event
+document.addEventListener("DOMContentLoaded", function(evt) {
+    document.getElementById('name').focus();
+})
 document.getElementById('productForm')
     .addEventListener('submit', function(evt) {
-
-        // Product Info
+        // Product User Inputs
         const id = idLine;
         const name = document.getElementById('name').value;
         const quantity = parseFloat(document.getElementById('quantity').value);
         const discount = parseFloat(document.getElementById('discount').value);
         const price = parseFloat(document.getElementById('price').value);
         const total = ((price * quantity) * (1 - (discount/100)));
-        const subTotalSummary = document.getElementById('subTotalSummary');
-
-        // Call Class Produc and Ui
-        const product = new Product(id, name, quantity, discount, price, total);
         const ui = new Ui();
-
-        if (name === '' ||  quantity === '' || discount === '' || price === '') {
-            ui.showMenssage('Complete Fields Please', 'warning');
+        // Validations
+        if (name === "" || quantity === "") {
+            bootbox.alert({
+                message: '<h4 class="modal-title">Complete Fields Please!</h4>',
+                backdrop: true,
+            });
+            ui.colorMenssage("warning");
+        } else if(isNaN(total)){
+            bootbox.alert({
+                message: '<h4 class="modal-title">Complete Fields Please!</h4>',
+                backdrop: true,
+            });
+            ui.colorMenssage("warning");
         } else{
+            const product = new Product(id, name, quantity, discount, price, total);
             ui.addProduct(product);
-            subTotalSummary.innerHTML = new Intl.NumberFormat('en-US',
-            { style: 'currency', currency: 'USD' }
-            ).format(subTotalCalculation());
+            addSummary(id);
         }
-
         evt.preventDefault();
     });

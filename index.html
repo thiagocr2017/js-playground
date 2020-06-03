@@ -14,7 +14,7 @@
 <div class="container">
     <div class="row">
         <div class="col-12"><h2>Invoice</h2>
-        <div class="text-danger">Numero: 0000001</div>
+        <div class="text-danger">Numero: 0000000</div>
         </div>
         
         <div class="col-12">
@@ -24,9 +24,9 @@
                 <div class="card">
                         <div class="card-body">
                        
-                            <div>Empresa: Vendinha de Tomade</div>
+                            <div>Empresa: </div>
                             <div>CNPJ: </div>
-                            <div>Vendedor: José Silva</div>
+                            <div>Vendedor: </div>
                             <div>Phone Number: </div>
                             <div>Address: </div>
                        
@@ -88,7 +88,7 @@
                 </div>
             </div>
             <!-- end Row Products -->
-            <div id="message"></div>
+            
             <!-- Row Products Table -->
             <div class="row mt-2">
                 <div class="col">
@@ -116,8 +116,8 @@
             <!-- end Row Products Table -->
             <div class="row mt-2 text-right">
                 <div class="col">
-                    <button type="submit" class="btn btn-block btn-success">Save</button>
-                    <button type="submit" class="btn btn-block btn-secondary">Cancel</button>
+                    <button type="submit" id="save" onClick="save()" class="btn btn-block btn-success">Save</button>
+                    <button type="submit" id="cancel" class="btn btn-block btn-secondary">Cancel</button>
                 </div>
                 <div class="col">
                     <div class="card">
@@ -130,10 +130,10 @@
                                     <div>Total:</div>
                                 </div>
                                     <div class="col">
-                                    <div id="subTotalSummary"></div>
-                                    <div id="discountSummary"></div>
-                                    <div id="ivaSummary"></div>
-                                    <div id="totalSummary"></div>
+                                    <div id="subTotalSummary">$0.00</div>
+                                    <div id="discountSummary">$0.00</div>
+                                    <div id="ivaSummary">$0.00</div>
+                                    <div id="totalSummary">$0.00</div>
                                 </div>
                             </div>
                         </div>
@@ -144,5 +144,8 @@
     </div>
 </div>
 <script src="js/App.js"></script>
+<script src="https://code.jquery.com/jquery-1.9.1.min.js" integrity="sha256-wS9gmOZBqsqWxgIVgA8Y9WcQOa7PgSIX+rPA0VL2rbQ=" crossorigin="anonymous"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/bootbox.all.min.js"></script>
 </body>
 </html>
