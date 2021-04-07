@@ -1,2 +1,2 @@
 # js-playground
- jugando con javascript
+ Creando una plantilla de facturación solo con Js 
